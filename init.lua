@@ -37,11 +37,12 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
-
 -- Highlight yanked text for a short time
   vim.api.nvim_exec([[
     augroup YankHighlight
       autocmd!
-      autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=200})
+      autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup="Search", timeout=200})
     augroup end
   ]], false)
+
+vim.opt.smartindent = true
