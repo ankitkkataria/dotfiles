@@ -53,8 +53,12 @@ return {
     end,
   },
   {
-    "mg979/vim-visual-multi",
-  },
+        'mg979/vim-visual-multi',
+        -- See https://github.com/mg979/vim-visual-multi/issues/241
+        init = function()
+            --vim.g.VM_add_cursor_at_pos_no_mappings = 1
+        end,
+    },
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -64,5 +68,11 @@ return {
             -- Configuration here, or leave empty to use defaults
         })
     end
+},
+{
+  'numToStr/Comment.nvim',
+  opts = {
+    -- add any options here
+  }
 }
 }
