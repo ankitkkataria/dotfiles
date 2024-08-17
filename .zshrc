@@ -106,5 +106,6 @@ eval "$(zoxide init --cmd cd zsh)"
 alias ls="exa"
 alias tree="exa --tree"
 alias cat="batcat"
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+alias fa='fzf --preview="batcat --color=always --style=numbers {}" --bind "ctrl-n:execute(nvim {})"'
+alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
 export PATH="$PATH:~/.local/bin/"
