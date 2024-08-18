@@ -1,12 +1,7 @@
 require "nvchad.mappings"
 
--- add yours here
-
-local map = vim.keymap.set
-
-map("i", "jj", "<ESC>")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+-- Basic remaps
+vim.keymap.set("i", "jj", "<ESC>")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("n", "K", "5k")
@@ -16,7 +11,6 @@ vim.keymap.set("v", "K", "5k")
 vim.keymap.set("x", "p", [["_dP]])
 vim.keymap.set("n", "<leader>/",":noh<cr>")
 
--- vim.keymap.set("n", "<C-b>","<leader>e")
 -- Copy/cut and paste to system clipboard
 vim.keymap.set({"n", "v"}, "y", [["+y]])
 vim.keymap.set({"n", "v"}, "mb", "%")
@@ -25,6 +19,7 @@ vim.keymap.set({"n", "v"}, "p", [["+p]])
 vim.keymap.set("n", "P", [["+P]])
 vim.keymap.set({"n", "v"}, "d", [["+d]])
 vim.api.nvim_set_keymap('n', 'gh', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
+
 -- EasyMotion Settings
 local hop = require('hop')
 vim.keymap.set('', 'f', function()
@@ -34,11 +29,11 @@ vim.keymap.set('', '<leader>l', function()
   hop.hint_lines_skip_whitespace()
 end, {remap=true})
 
--- Visual mode key mapping
-vim.keymap.set('v', '<C-d>', '<Plug>(VM-Find-Under)', { noremap = true, silent = true })
-
--- Normal mode key mapping
-vim.keymap.set('n', '<C-d>', '<Plug>(VM-Find-Under)', { noremap = true, silent = true })
+-- -- Visual mode key mapping
+-- vim.keymap.set('v', '<C-d>', '<Plug>(VM-Find-Under)', { noremap = true, silent = true })
+--
+-- -- Normal mode key mapping
+-- vim.keymap.set('n', '<C-d>', '<Plug>(VM-Find-Under)', { noremap = true, silent = true })
 
 -- Select text with Shift + Arrow keys in Insert mode
 vim.api.nvim_set_keymap('i', '<S-Left>', '<C-O>v<Left>', { noremap = true, silent = true })
