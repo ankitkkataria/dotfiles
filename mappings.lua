@@ -60,3 +60,8 @@ vim.api.nvim_set_keymap('v', '<S-Tab>', '<gv', { noremap = true, silent = true }
 
 -- Quickly switch between current and previous opened tab
 vim.api.nvim_set_keymap('n', '<leader><leader>', '<C-^>', { noremap = true, silent = true })
+
+-- Splits
+vim.api.nvim_set_keymap('n', '<leader>sv', ':vsplit<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sh', ':split<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sc', ':close<CR>', { noremap = true, silent = true })
