@@ -47,3 +47,16 @@ vim.api.nvim_set_keymap('i', '<S-End>', '<C-O>v<End>', { noremap = true, silent 
 
 -- Delete selected text with Backspace in Visual mode and go to Insert mode
 vim.api.nvim_set_keymap('v', '<BS>', 'dgi', { noremap = true, silent = true })
+
+-- Indenting selected text and even after that we shall stay in visual mode so we can further indent
+vim.api.nvim_set_keymap('v', '<', '<gv', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '>', '>gv', { noremap = true, silent = true })
+
+-- Indent using Tab in visual mode
+vim.api.nvim_set_keymap('v', '<Tab>', '>gv', { noremap = true, silent = true })
+
+-- Outdent using Shift-Tab in visual mode
+vim.api.nvim_set_keymap('v', '<S-Tab>', '<gv', { noremap = true, silent = true })
+
+-- Quickly switch between current and previous opened tab
+vim.api.nvim_set_keymap('n', '<leader><leader>', '<C-^>', { noremap = true, silent = true })
