@@ -106,27 +106,30 @@ setopt no_auto_menu  # require an extra TAB press to open the completion menu
 eval "$(zoxide init --cmd cd zsh)"
 
 alias ls="eza --icons --group-directories-first"
-alias tree="exa --tree --dirsfirst --group"
+alias tree="eza --tree --dirsfirst --group"
 alias cat="batcat"
-alias fa='fzf --preview="batcat --color=always --style=numbers {}" --bind "ctrl-n:execute(nvim {})"'
+alias fa='find . -type f | fzf --preview="batcat --color=always --style=numbers {}" --bind "ctrl-n:execute(nvim {})"'
+alias ff='fzf --preview="batcat --color=always --style=numbers {}" --bind "ctrl-n:execute(nvim {})"'
 alias fd='find . -type d | fzf --preview "tree -C {}" --bind "enter:execute(cd {} && echo Changed directory to {} && exec zsh)"'
-alias fs="exa --tree"
+alias fs="eza --icons --group-directories-first --tree"
 alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
-export PATH="$PATH:~/.local/bin/"
 alias ll="eza --icons --group-directories-first -l"
-alias pbcopy='xsel --clipboard --input'
 
+export PATH="$PATH:~/.local/bin/"
+
+# Some useful functions
 copyLine () {
   rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print $3}' | sed 's/^\s+//' | xclip -selection clipboard 
 }
 
-openAtLine () {
+fw () {
   nvim $(rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print "+"$2" "$1}')
 }
 
 copyPathToAFile () {
   local file=$(find ${1:-.} -type f | sk --preview "batcat --color=always {}")
   [ -n "$file" ] && echo -n "$file" | xclip -selection clipboard
+  echo "Copied '$file' to clipboard"
 }
 
 extractArchive () {
@@ -157,7 +160,7 @@ diffFiles () {
 } 
 
 ### Finds 5 newest files recursively in a directory - only non-hidden stuff
-recentlyUpdatedFiles() {
+ruf() {
         find . -type f \( ! -regex '.*/\..*' \) -print0 | xargs -0 stat -c "%Y:%n" | sort -n| tail -n 5 | cut -d ':' -f2-
 }
 
