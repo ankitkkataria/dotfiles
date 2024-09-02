@@ -108,14 +108,12 @@ eval "$(zoxide init --cmd cd zsh)"
 alias ls="eza --icons --group-directories-first"
 alias tree="eza --tree --dirsfirst --group"
 alias cat="batcat"
-alias fa='find . -type f | fzf --preview="batcat --color=always --style=numbers {}" --bind "ctrl-n:execute(nvim {})"'
-alias ff='fzf --preview="batcat --color=always --style=numbers {}" --bind "ctrl-n:execute(nvim {})"'
-alias fd='find . -type d | fzf --preview "tree -C {}" --bind "enter:execute(cd {} && echo Changed directory to {} && exec zsh)"'
 alias fs="eza --icons --group-directories-first --tree"
 alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
 alias ll="eza --icons --group-directories-first -l"
 
 export PATH="$PATH:~/.local/bin/"
+
 
 # Some useful functions
 copyLine () {
@@ -124,6 +122,26 @@ copyLine () {
 
 fw () {
   nvim $(rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print "+"$2" "$1}')
+}
+
+ff() {
+  local file
+  file=$(fzf --preview="batcat --color=always --style=numbers {}")
+  [ -n "$file" ] && nvim "$file"
+}
+
+fa() {
+  local file
+  file=$(find . -type f | fzf --preview="batcat --color=always --style=numbers {}")
+  [ -n "$file" ] && nvim "$file"
+}
+
+fd() {
+  local dir
+  dir=$(find . -type d | fzf --preview "eza --icons --tree --color=always {}")
+  if [ -n "$dir" ]; then
+    cd "$dir" && echo "Changed directory to $dir"
+  fi
 }
 
 copyPathToAFile () {
