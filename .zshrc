@@ -114,7 +114,6 @@ alias ll="eza --icons --group-directories-first -l"
 
 export PATH="$PATH:~/.local/bin/"
 
-
 # Some useful functions
 copyLine () {
   rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print $3}' | sed 's/^\s+//' | xclip -selection clipboard 
