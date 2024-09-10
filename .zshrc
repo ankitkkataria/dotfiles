@@ -184,18 +184,15 @@ diffFiles () {
   [ -n "$file1" ] && [ -n "$file2" ] && nvim -d "$file1" "$file2"
 } 
 
-### Finds 5 newest files recursively in a directory - only non-hidden stuff
-# ruf() {
-#         find . -type f \( ! -regex '.*/\..*' \) -print0 | xargs -0 stat -c "%Y:%n" | sort -n| tail -n 5 | cut -d ':' -f2-
-# }
-
 ruf() {
-    find . -type f \( ! -regex '.*/\..*' \) -print0 | \
+  local file
+  file=$(find . -type f \( ! -regex '.*/\..*' \) -print0 | \
     xargs -0 stat -c "%Y:%n" | \
     sort -n | \
     tail -n 20 | \
     cut -d ':' -f2- | \
-    fzf --preview "batcat --style=numbers --color=always --line-range=:500 {}"
+    fzf --preview="batcat --style=numbers --color=always --line-range=:500 {}")
+  [ -n "$file" ] && nvim "$file"
 }
 
 cdu() {
