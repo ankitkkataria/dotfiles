@@ -105,14 +105,22 @@ setopt no_auto_menu  # require an extra TAB press to open the completion menu
 
 eval "$(zoxide init --cmd cd zsh)"
 
-alias ls="eza --icons --group-directories-first"
-alias tree="eza --tree --dirsfirst --group"
-alias cat="batcat"
-alias fs="eza --icons --group-directories-first --tree"
-alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
-alias ll="eza --icons --group-directories-first -l"
+# confirm before overwriting something
+alias cp="cp -i"
+alias mv='mv -i'
+alias rm='rm -i'
 
+# easier to read disk
+alias df='df -h'     # human-readable sizes
+alias free='free -m' # show sizes in MB
 export PATH="$PATH:~/.local/bin/"
+
+alias ls="exa --icons --group-directories-first"
+alias tree="exa --tree --dirsfirst --group"
+alias cat="batcat"
+alias fs="exa --icons --group-directories-first --tree"
+alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
+alias ll="exa --icons --group-directories-first -l"
 
 # Some useful functions
 copyLine () {
@@ -137,7 +145,7 @@ fa() {
 
 fd() {
   local dir
-  dir=$(find . -type d | fzf --preview "eza --icons --tree --color=always {}")
+  dir=$(find . -type d | fzf --preview "exa --icons --tree --color=always {}")
   if [ -n "$dir" ]; then
     cd "$dir" && echo "Changed directory to $dir"
   fi
@@ -177,11 +185,20 @@ diffFiles () {
 } 
 
 ### Finds 5 newest files recursively in a directory - only non-hidden stuff
+# ruf() {
+#         find . -type f \( ! -regex '.*/\..*' \) -print0 | xargs -0 stat -c "%Y:%n" | sort -n| tail -n 5 | cut -d ':' -f2-
+# }
+
 ruf() {
-        find . -type f \( ! -regex '.*/\..*' \) -print0 | xargs -0 stat -c "%Y:%n" | sort -n| tail -n 5 | cut -d ':' -f2-
+    find . -type f \( ! -regex '.*/\..*' \) -print0 | \
+    xargs -0 stat -c "%Y:%n" | \
+    sort -n | \
+    tail -n 20 | \
+    cut -d ':' -f2- | \
+    fzf --preview "batcat --style=numbers --color=always --line-range=:500 {}"
 }
 
-up(){
+cdu() {
   local d=""
   limit=$1
   for ((i=1 ; i <= limit ; i++))
