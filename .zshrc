@@ -164,7 +164,6 @@ copyPathToAFile () {
   fi
 }
 
-
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
@@ -235,8 +234,42 @@ ctif() {
   fi
 
   if xsel --clipboard < "$1"; then
-    echo "Copied $1 to clipboard"
+    echo "Copied all the text inside the file $1 to clipboard"
   else
     echo "Failed to copy $1 to clipboard"
   fi
+}
+
+ptif () {
+  local file="${1}"
+  
+  if [ -z "$file" ]; then
+    echo "Please provide a file name or path."
+    return 1
+  fi
+
+  # Convert relative path to absolute path
+  local abs_path=$(realpath "$file")
+  
+  # Check if the file exists
+  if [ -f "$abs_path" ]; then
+    echo "Do you want to overwrite '$abs_path'? (y/n)"
+    read confirm
+    if [ "$confirm" != "y" ]; then
+      echo "Aborted."
+      return
+    fi
+  fi
+
+  # Get clipboard content with the explicit clipboard target
+  clipboard_content=$(xclip -o -selection clipboard 2>/dev/null)
+
+  if [ -z "$clipboard_content" ]; then
+    echo "Error: Unable to retrieve clipboard content."
+    return 1
+  fi
+
+  # Paste clipboard content into the file
+  echo -n "$clipboard_content" > "$abs_path"
+  echo "Pasted clipboard content into '$abs_path'"
 }
