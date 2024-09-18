@@ -132,16 +132,64 @@ fw () {
   nvim $(rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print "+"$2" "$1}')
 }
 
+fwd() {
+  local selection
+  selection=$(rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}')
+  
+  if [ -n "$selection" ]; then
+    # Extract line number, file path, and directory from the selection
+    local line_number
+    local file_path
+    line_number=$(echo "$selection" | awk -F ':' '{print $2}')
+    file_path=$(echo "$selection" | awk -F ':' '{print $1}')
+    
+    # Get directory and filename
+    local dir
+    dir=$(dirname "$file_path")
+    local filename
+    filename=$(basename "$file_path")
+
+    # Change to the directory containing the file
+    cd "$dir" || return
+
+    # Open the file in nvim with the specific line number
+    nvim +"$line_number" "$filename"
+  fi
+}
+
 ff() {
   local file
   file=$(fzf --preview="batcat --color=always --style=numbers {}")
-  [ -n "$file" ] && nvim "$file"
+  
+  if [ -n "$file" ]; then
+    # Change to the directory containing the file
+    local dir
+    dir=$(dirname "$file")
+    local filename
+    filename=$(basename "$file")
+    echo "changing the directory to $dir"
+    cd "$dir" || return
+    
+    # Open the file in nvim using just the filename
+    nvim "$filename"
+  fi
 }
 
 fa() {
   local file
   file=$(find . -type f | fzf --preview="batcat --color=always --style=numbers {}")
-  [ -n "$file" ] && nvim "$file"
+  
+  if [ -n "$file" ]; then
+    # Change to the directory containing the file
+    local dir
+    dir=$(dirname "$file")
+    local filename
+    filename=$(basename "$file")
+    cd "$dir" || return
+    
+    # Open the file in nvim using just the filename
+    nvim "$filename"
+  fi
 }
 
 fd() {
