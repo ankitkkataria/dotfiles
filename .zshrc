@@ -123,11 +123,12 @@ alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
 alias ll="exa --icons --group-directories-first -l"
 
 # Some useful functions
+# Some useful functions
 copyLine () {
   rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print $3}' | sed 's/^\s+//' | xclip -selection clipboard 
 }
 
-fw () {
+fw () { 
   nvim $(rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}' | awk -F ':' '{print "+"$2" "$1}')
 }
 
@@ -153,11 +154,18 @@ fd() {
 
 copyPathToAFile () {
   local file=$(find ${1:-.} -type f | sk --preview "batcat --color=always {}")
-  [ -n "$file" ] && echo -n "$file" | xclip -selection clipboard
-  echo "Copied '$file' to clipboard"
+  if [ -n "$file" ]; then
+    # Convert relative path to absolute path
+    local abs_path=$(realpath "$file")
+    echo -n "$abs_path" | xclip -selection clipboard
+    echo "Copied '$abs_path' to clipboard"
+  else
+    echo "No file selected or found"
+  fi
 }
 
-extractArchive () {
+
+extract () {
   if [ -f "$1" ] ; then
     case "$1" in
       *.tar.bz2)   tar xjf "$1"    ;;
@@ -213,4 +221,22 @@ cpwd() {
     local current_dir="$PWD"
     echo -n "$current_dir" | xclip -selection clipboard
     echo "Copied '$current_dir' to clipboard"
+}
+
+ctif() {
+  if [ -z "$1" ]; then
+    echo "Usage: copyfile filename"
+    return 1
+  fi
+
+  if [ ! -f "$1" ]; then
+    echo "File not found: $1"
+    return 1
+  fi
+
+  if xsel --clipboard < "$1"; then
+    echo "Copied $1 to clipboard"
+  else
+    echo "Failed to copy $1 to clipboard"
+  fi
 }
