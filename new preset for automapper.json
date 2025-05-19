@@ -270,5 +270,22 @@
         "target_uinput": "keyboard",
         "output_symbol": "Super_L + KEY_4",
         "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 29,
+                "origin_hash": "de0d5ff029d4b9df4e3c47621872229f"
+            },
+            {
+                "type": 1,
+                "code": 50,
+                "origin_hash": "de0d5ff029d4b9df4e3c47621872229f"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "KEY_LEFTCTRL + KEY_BACKSLASH",
+        "mapping_type": "key_macro"
     }
 ]
