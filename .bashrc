@@ -2,10 +2,10 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# If not running interactively, don't do anything
+# If not running interactively, don't do anythk
 case $- in
-    *i*) ;;
-      *) return;;
+  *i*) ;;
+  *) return;;
 esac
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -118,8 +118,7 @@ fi
 
 eval "$(zoxide init bash)"
 eval "$(zoxide init --cmd cd bash)"
-# alias cd="z"
-# alias cdi="zi"
+
 # confirm before overwriting something
 alias cp="cp -i"
 alias mv='mv -i'
@@ -132,7 +131,6 @@ export PATH="$PATH:~/.local/bin/"
 
 alias ls="exa --icons --group-directories-first"
 alias tree="exa --tree --dirsfirst --group"
-# alias cat="batcat"
 alias fs="exa --icons --group-directories-first --tree"
 alias pkill='ps -ef | fzf | awk "{print \$2}" | xargs kill -9'
 alias ll="exa --icons --group-directories-first -l"
@@ -148,7 +146,11 @@ fw() {
   local file
   local line
   local dir
-  selected=$(rg --line-number "${1:-.}" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}')
+  local search_pattern="${1:-.}"
+  
+  # Handle spaces in search pattern by properly quoting
+  selected=$(rg --line-number --ignore-case "$search_pattern" | sk --delimiter ':' --preview 'batcat --color=always --highlight-line {2} {1}')
+  
   if [ -n "$selected" ]; then
     file=$(echo "$selected" | awk -F ':' '{print $1}')
     line=$(echo "$selected" | awk -F ':' '{print $2}')
@@ -212,6 +214,14 @@ fo() {
     else
       echo "File no longer exists: $file"
     fi
+  fi
+}
+
+fd() {
+  local dir
+  dir=$(find . -type d | fzf --preview "exa --icons --tree --color=always {}")
+  if [ -n "$dir" ]; then
+    cd "$dir" && echo "Changed directory to $dir"
   fi
 }
 
@@ -360,27 +370,7 @@ mkdircd() {
         cd "$@" || exit
 }
 
-# Advanced clipboard manager
-clip() {
-  # Clipboard history manager with preview
-  local clip_dir="$HOME/.clipboard_history"
-  mkdir -p "$clip_dir"
-  
-  # Save current clipboard
-  xclip -selection clipboard -o > "$clip_dir/$(date +%Y%m%d-%H%M%S)"
-  
-  # Browse and restore old clipboards
-  local selected=$(find "$clip_dir" -type f | \
-    sort -r | \
-    fzf --preview 'cat {}' \
-    --bind 'ctrl-d:execute(rm {})' \
-    --header 'CTRL-D: delete entry')
-    
-  [ -n "$selected" ] && cat "$selected" | xclip -selection clipboard
-
-}
-
-createBackupForFolder () {
+backupFolder () {
     local source_dir="$1"
     local backup_name="${2:-backup-$(date +%Y%m%d-%H%M%S)}"
     local backup_dir="$HOME/.backups"
@@ -426,31 +416,21 @@ createBackupForFolder () {
     echo "Backup created: $backup_file (Size: $size)"
 }
 
-listBackups() {
+listBackups() { 
     local backup_dir="$HOME/.backups"
     ls -lh "$backup_dir" | head -n 10
 }
 
-fd() {
-  local dir
-  dir=$(find . -type d | fzf --preview "exa --icons --tree --color=always {}")
-  if [ -n "$dir" ]; then
-    cd "$dir" && echo "Changed directory to $dir"
-  fi
-}
-
 # Sourcing paths
-# source /home/ankit/apriltag_ros/install/apriltag_ros/share/apriltag_ros/local_setup.bash
 source /opt/ros/humble/setup.bash
-#export GZ_VERSION=garden
 source /home/ankit/ws/install/setup.bash
-# source ~/ws_sensor_combined/install/setup.bash
-# source /home/ankit/apriltag_ros2_ws/install/setup.bash
-#. "$HOME/.cargo/env"
-#export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
